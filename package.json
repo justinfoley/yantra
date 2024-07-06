@@ -1,0 +1,23 @@
+{
+  "name": "yantra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justinfoley/yantra.git"
+  },
+  "dependencies": {
+        "two.js": "^0.8.14"
+      },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justinfoley/yantra/issues"
+  },
+  "homepage": "https://github.com/justinfoley/yantra#readme"
+}
