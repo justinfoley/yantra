@@ -16,14 +16,22 @@ export class Yantra {
     bindu.stroke = 'black';
     bindu.linewidth = 3;
 
-    var fem1 = new FeminineTriangle(this.circleRadius, centreX, centreY);
+    let yOffset = Math.sin(2 * Math.PI / 24) * this.circleRadius;
+    let xOffset = Math.cos(2 * Math.PI / 24) * this.circleRadius;
+    let topFem1 = [centreX, centreY - yOffset];
+    // let topFem1 = [centreX, centreY];
+
+    let bottomMasc1 = [centreX, centreY + yOffset];
+
+    // var fem1 = new FeminineTriangle2(xOffset, topFem1[0], topFem1[1], this.circleRadius);
+    var fem1 = new FeminineTriangle(centreX, centreY , this.circleRadius, xOffset, yOffset);
     fem1.draw(two);
 
-    var masc1 = new MasculineTriangle(this.circleRadius, centreX, centreY);
+    var masc1 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, yOffset);
     masc1.draw(two);
 
-    var fem2 = new FeminineTriangle(this.circleRadius*3/4, centreX, centreY-50);
-    fem2.draw(two);
+    // var fem2 = new FeminineTriangle(centreX, centreY , this.circleRadius, xOffset, yOffset);
+    // fem2.draw(two);
 
   }
 }
@@ -41,17 +49,14 @@ class Triangle {
 }
 
 class FeminineTriangle extends Triangle {
-  constructor(sideLength, centreX, centreY) {
-    let left= [centreX - sideLength, centreY];
-    let right= [centreX + sideLength, centreY]
-    let bottom = [centreX, centreY + sideLength]
+  constructor(centreX, centreY, radius, xOffset, yOffset) {
+    let left= [centreX - xOffset, centreY - yOffset];
+    let right= [centreX + xOffset, centreY - yOffset]
+    let bottom = [centreX, centreY + radius]
+
     let points = [left, right, bottom];
 
     super(points);
-
-    this.sideLength = sideLength;
-    this.centreX = centreX;
-    this.centreY = centreY;
 
     this.left = left;
     this.right = right;
@@ -60,20 +65,17 @@ class FeminineTriangle extends Triangle {
 }
 
 class MasculineTriangle extends Triangle {
-  constructor(sideLength, centreX, centreY) {
-    let left= [centreX - sideLength, centreY];
-    let right= [centreX + sideLength, centreY]
-    let top = [centreX, centreY - sideLength]
-    let points = [left, right, top];
+  constructor(centreX, centreY, radius, xOffset, yOffset) {
+    let left= [centreX - xOffset, centreY + yOffset];
+    let right= [centreX + xOffset, centreY + yOffset]
+    let bottom = [centreX, centreY - radius]
+
+    let points = [left, right, bottom];
 
     super(points);
 
-    this.sideLength = sideLength;
-    this.centreX = centreX;
-    this.centreY = centreY;
-
     this.left = left;
     this.right = right;
-    this.top = top;
+    this.bottom = bottom;
   }
 }
