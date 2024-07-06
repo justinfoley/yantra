@@ -10,7 +10,7 @@ var elem = document.body;
 
 var two = new Two(params).appendTo(elem);
 
-var yantra = new Yantra(1, 2);
+var yantra = new Yantra(500);
 yantra.draw(two);
 
 // Two.js has convenient methods to make shapes and insert them into the scene.
