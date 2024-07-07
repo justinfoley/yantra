@@ -9,6 +9,17 @@ export class Yantra {
   }
 
   draw(two) {
+    let A = new Point(1, 1);
+    let B = new Point(4, 4);
+    let C = new Point(1, 8);
+    let D = new Point(2, 4);
+
+    let line1 = Line.fromPoints(A, B);
+    let line2 = Line.fromPoints(C, D);
+
+    console.log("intersection: " + line1.intersection(line2));
+
+
     var centreX = two.width * 0.5;
     var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
     var circle = two.makeCircle(centreX, centreY, this.circleRadius);
@@ -95,6 +106,16 @@ export class Yantra {
     let decrement9 = this.circleRadius * 16 / 24;
     var masc4 = new MasculineTriangle2(centreX, centreY , this.circleRadius, this.getCircleWidthForHeight(this.circleRadius, topHeight9) - decrement9, topHeight9, bottomHeight9);
     masc4.draw(two);
+
+    let lineFem3Left = new Line(fem3.left[0], fem3.left[1], fem3.bottom[0], fem3.bottom[1]);
+    let line1Masc3Left = new Line(masc3.bottom[0], masc3.bottom[1], masc3.left[0], masc3.left[1]);
+
+    let intersect1 = lineFem3Left.intersection(line1Masc3Left);
+    console.log("fem3 L masc3 L intersection: " + intersect1);
+
+    var testC = two.makeCircle(intersect1.x, intersect1.y, 3);
+    testC.stroke = 'red';
+    testC.linewidth = 3;
 
     // var masc2 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 12 / 24);
     // masc2.draw(two);
@@ -183,4 +204,60 @@ class MasculineTriangle extends Triangle {
     this.right = right;
     this.bottom = bottom;
   }
+}
+
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return `Point(${this.x}, ${this.y})`;
+  }
+}
+
+class Line {
+  constructor(startX, startY, endX, endY) {
+    this.startX = startX;
+    this.startY = startY;
+    this.endX = endX;
+    this.endY = endY;
+  }
+
+  static fromPoints(start, end) {
+    return new Line(start.x, start.y, end.x, end.y);
+  }
+
+  toString() {
+    return `Line(${this.startX}, ${this.startY}, ${this.endX}, ${this.endY})`;
+  }
+
+  intersection(line){
+        // Line AB represented as a1x + b1y = c1
+        var a1 = this.endY - this.startY;
+        var b1 = this.startX - this.endX;
+        var c1 = a1*this.startX + b1*this.startY;
+
+        // Line CD represented as a2x + b2y = c2
+        var a2 = line.endY - line.startY;
+        var b2 = line.startX - line.endX;
+        var c2 = a2*line.startX + b2*line.startY;
+
+        var determinant = a1*b2 - a2*b1;
+
+        if (determinant === 0)
+        {
+            // The lines are parallel. This is simplified
+            // by returning a pair of FLT_MAX
+            return null;
+        }
+        else
+        {
+            var x = (b2*c1 - b1*c2)/determinant;
+            var y = (a1*c2 - a2*c1)/determinant;
+            return new Point(x, y);
+        }
+    }
+
 }
