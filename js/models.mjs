@@ -27,11 +27,8 @@ export class Yantra {
     console.log("yOffset: " + yOffset);
 
 
-    var fem1 = new FeminineTriangle(centreX, centreY , this.circleRadius, xOffset, yOffset);
+    var fem1 = new FeminineTriangle2(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 18 / 24, this.circleRadius * -3 / 24);
     fem1.draw(two);
-
-    var masc1 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, yOffset);
-    masc1.draw(two);
 
     let yOffset2 = Math.sin(2 * Math.PI / 12) * this.circleRadius;
     let xOffset2 = Math.cos(2 * Math.PI / 12) * this.circleRadius;
@@ -39,21 +36,30 @@ export class Yantra {
     console.log("yOffset2: " + yOffset2);
 
     let boxX = Math.cos(2 * Math.PI / 8) * this.circleRadius;
-    let boxY = Math.sin(2 * Math.PI / 8) * this.circleRadius;
-    console.log("boxX: " + boxX);
-    console.log("boxY: " + boxY);
 
-    two.makeCircle(centreX - boxX, centreY - boxY, 5)
-    let line = two.makeLine(centreX - boxX, centreY - boxY, centreX + boxX, centreY - boxY);
-    line.stroke = 'green';
-    // two.makeRectangle(centreX - boxX, centreY - boxY, 100, 100);
-
-    // -30
-    let fem2 = new FeminineTriangle(centreX, centreY , this.circleRadius - yOffset2, boxX, yOffset2);
+    let fem2 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 12 / 24, this.circleRadius * -18 / 24);
     fem2.draw(two);
 
-    var masc2 = new MasculineTriangle(centreX, centreY , this.circleRadius - yOffset2, xOffset2 - 32, yOffset2);
-    masc2.draw(two);
+    let fem3 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 7 / 24, this.circleRadius * -24 / 24);
+    fem3.draw(two);
+
+    let fem4 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 4 / 24, this.circleRadius * -12 / 24);
+    fem4.draw(two);
+
+    let fem5 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 1 / 24, this.circleRadius * -6 / 24);
+    fem5.draw(two);
+
+    // var masc1 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 18 / 24);
+    // masc1.draw(two);
+    //
+    // var masc2 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 12 / 24);
+    // masc2.draw(two);
+    //
+    // var masc3 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 6 / 24);
+    // masc3.draw(two);
+    //
+    // var masc4 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 3 / 24);
+    // masc4.draw(two);
 
   }
 }
@@ -76,6 +82,22 @@ class FeminineTriangle extends Triangle {
     let left= [centreX - xOffset, centreY - yOffset];
     let right= [centreX + xOffset, centreY - yOffset]
     let bottom = [centreX, centreY + radius]
+
+    let points = [left, right, bottom];
+
+    super(points);
+
+    this.left = left;
+    this.right = right;
+    this.bottom = bottom;
+  }
+}
+
+class FeminineTriangle2 extends Triangle {
+  constructor(centreX, centreY, radius, xOffset, yOffsetStart, yOffsetEnd) {
+    let left= [centreX - xOffset, centreY - yOffsetStart];
+    let right= [centreX + xOffset, centreY - yOffsetStart]
+    let bottom = [centreX, centreY - yOffsetEnd]
 
     let points = [left, right, bottom];
 
