@@ -4,6 +4,10 @@ export class Yantra {
     this.objects = []
   }
 
+  getCircleWidthForHeight(radius, height) {
+    return Math.sqrt(Math.pow(radius, 2) - Math.pow(height, 2));
+  }
+
   draw(two) {
     var centreX = two.width * 0.5;
     var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
@@ -26,8 +30,10 @@ export class Yantra {
     console.log("xOffset: " + xOffset);
     console.log("yOffset: " + yOffset);
 
-
-    var fem1 = new FeminineTriangle2(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 18 / 24, this.circleRadius * -3 / 24);
+    let topHeight1 = this.circleRadius * 18 / 24;
+    let bottomHeight1 = this.circleRadius * -3 / 24;
+    let decrement1 = this.circleRadius * 3 / 24;
+    var fem1 = new FeminineTriangle2(centreX, centreY , this.circleRadius, this.getCircleWidthForHeight(this.circleRadius, topHeight1) - decrement1, topHeight1, bottomHeight1);
     fem1.draw(two);
 
     let yOffset2 = Math.sin(2 * Math.PI / 12) * this.circleRadius;
@@ -37,16 +43,30 @@ export class Yantra {
 
     let boxX = Math.cos(2 * Math.PI / 8) * this.circleRadius;
 
-    let fem2 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 12 / 24, this.circleRadius * -18 / 24);
+    let topHeight2 = this.circleRadius * 12 / 24;
+    let bottomHeight2 = this.circleRadius * -18 / 24;
+    let decrement2 = this.circleRadius * 5 / 24;
+    let fem2 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, this.getCircleWidthForHeight(this.circleRadius, topHeight2) - decrement2, topHeight2, bottomHeight2);
     fem2.draw(two);
 
-    let fem3 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 7 / 24, this.circleRadius * -24 / 24);
+    let topHeight3 = this.circleRadius * 7 / 24;
+    let bottomHeight3 = this.circleRadius * -24 / 24;
+    let decrement3 = 0;
+    let fem3 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, this.getCircleWidthForHeight(this.circleRadius, topHeight3) - decrement3, topHeight3, bottomHeight3);
     fem3.draw(two);
 
-    let fem4 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 4 / 24, this.circleRadius * -12 / 24);
+    let topHeight4 = this.circleRadius * 4 / 24;
+    let bottomHeight4 = this.circleRadius * -12 / 24;
+    let decrement4 = this.circleRadius * 16 / 24;
+    let fem4 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, this.getCircleWidthForHeight(this.circleRadius, topHeight4) - decrement4, topHeight4, bottomHeight4);
+    // let fem4 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 4 / 24, this.circleRadius * -12 / 24);
     fem4.draw(two);
 
-    let fem5 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 1 / 24, this.circleRadius * -6 / 24);
+    let topHeight5 = this.circleRadius * 1 / 24;
+    let bottomHeight5 = this.circleRadius * -6 / 24;
+    let decrement5 = this.circleRadius * 18 / 24;
+    let fem5 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, this.getCircleWidthForHeight(this.circleRadius, topHeight5) - decrement5, topHeight5, bottomHeight5);
+    // let fem5 = new FeminineTriangle2(centreX, centreY , this.circleRadius - yOffset2, boxX, this.circleRadius * 1 / 24, this.circleRadius * -6 / 24);
     fem5.draw(two);
 
     // var masc1 = new MasculineTriangle(centreX, centreY , this.circleRadius, xOffset, this.circleRadius * 18 / 24);
