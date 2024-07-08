@@ -5,9 +5,12 @@ export class Yantra {
     this.two = two;
 
     let revealTime = 50;
-    this.stage1 = new Stage1(two, revealTime);
+    this.stage0 = new Stage0(two, revealTime, this.circleRadius);
 
-    revealTime += 100;
+    revealTime += 50;
+    this.stage1 = new Stage1(two, revealTime, this.circleRadius);
+
+    revealTime += 1000;
     this.fullStage = new FullStage(two, revealTime);
 
     // Hide everything at first - so we can layer animation on existing shapes
@@ -21,6 +24,7 @@ export class Yantra {
   }
 
   draw(two, frameCount) {
+    this.stage0.update(frameCount);
     this.stage1.update(frameCount);
     this.fullStage.update(frameCount);
   }
@@ -30,6 +34,13 @@ export class Yantra {
 class Triangle {
   constructor(points) {
     this.points = points;
+    this.one = new Point(points[0][0], points[0][1]);
+    this.two = new Point(points[1][0], points[1][1]);
+    this.three = new Point(points[2][0], points[2][1]);
+  }
+
+  static fromPoints(one, two, three) {
+    return new Triangle([[one.x, one.y], [two.x, two.y], [three.x, three.y]]);
   }
 
   draw(two) {
@@ -37,6 +48,8 @@ class Triangle {
     var top = two.makeLine(this.points[0][0], this.points[0][1], this.points[1][0], this.points[1][1]);
     var left = two.makeLine(this.points[0][0], this.points[0][1], this.points[2][0], this.points[2][1]);
     var right = two.makeLine(this.points[1][0], this.points[1][1], this.points[2][0], this.points[2][1]);
+    let group = two.makeGroup(top, left, right);
+    return group;
   }
 }
 
@@ -110,6 +123,13 @@ class Point {
     this.y = y;
   }
 
+  draw(two) {
+    let circle = two.makeCircle(this.x, this.y, 3);
+    circle.stroke = 'black';
+    circle.linewidth = 3;
+    return circle;
+  }
+
   toString() {
     return `Point(${this.x}, ${this.y})`;
   }
@@ -121,6 +141,12 @@ class Line {
     this.startY = startY;
     this.endX = endX;
     this.endY = endY;
+  }
+
+  draw(two) {
+    let line = two.makeLine(this.startX, this.startY, this.endX, this.endY);
+    line.dashes = [3, 3];
+    return line;
   }
 
   static fromPoints(start, end) {
@@ -165,10 +191,15 @@ class BaseStage {
     this.two = two;
     this.revealTime = revealTime;
     this.revealedShapes = new Map();
+    this.hiddenShapes = new Map();
   }
 
   addRevealedShape(shape, time) {
     this.revealedShapes.set(time, shape);
+  }
+
+  addHiddenShape(shape, time) {
+    this.hiddenShapes.set(time, shape);
   }
 
   update(frameCount) {
@@ -178,26 +209,36 @@ class BaseStage {
         shape.visible = true;
       }
     });
+
+    this.hiddenShapes.forEach((shape, time) => {
+      if(frameCount >= that.revealTime + time) {
+        shape.visible = false;
+      }
+    });
   }
 }
 
-class Stage1 extends BaseStage {
-  constructor(two, revealTime) {
+class Stage0 extends BaseStage {
+  constructor(two, revealTime, circleRadius) {
     super(two, revealTime);
 
     var centreX = two.width * 0.5;
     var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
-    this.circleRadius = 300;
+
+    this.centreX = centreX;
+    this.centreY = centreY;
+
+    this.circleRadius = circleRadius;
     this.circle = two.makeCircle(centreX, centreY, this.circleRadius);
     this.circle.stroke = 'orangered';
     this.circle.linewidth = 5;
     this.circle.visible = false;
     // circle.fill = '#FF8000';
-    console.log("two.width: " + two.width);
-    console.log("two.height: " + two.height);
-    console.log("centreX: " + centreX);
-    console.log("centreY: " + centreY);
-    console.log("circleRadius: " + this.circleRadius);
+    // console.log("two.width: " + two.width);
+    // console.log("two.height: " + two.height);
+    // console.log("centreX: " + centreX);
+    // console.log("centreY: " + centreY);
+    // console.log("circleRadius: " + this.circleRadius);
 
     this.bindu = two.makeCircle(centreX, centreY, 3);
     this.bindu.stroke = 'black';
@@ -206,12 +247,97 @@ class Stage1 extends BaseStage {
 
     this.addRevealedShape(this.circle, 0);
     this.addRevealedShape(this.bindu, 50);
+  }
+}
 
-    // let stage1GroupTemporary = two.makeGroup();
-    // let stage1GroupPermanent = two.makeGroup(circle, bindu);
+class Stage1 extends BaseStage {
+  constructor(two, revealTime, circleRadius) {
+    super(two, revealTime);
+
+    var centreX = two.width * 0.5;
+    var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
+
+    this.centreX = centreX;
+    this.centreY = centreY;
+
+    this.circleRadius = circleRadius;
+
+    let stage1GroupTemporary = two.makeGroup();
+    stage1GroupTemporary.visible = false;
+
+    let clockPoints = [];
+    for(let i= 0; i < 12; i++) {
+      let point = this.pointOnCircle(i);
+      clockPoints.push(point);
+      stage1GroupTemporary.add(point.draw(two));
+    }
+
+    let topLeftLine = Line.fromPoints(clockPoints[0], clockPoints[9]);
+    stage1GroupTemporary.add(topLeftLine.draw(two));
+
+    let bottomLeftLine = Line.fromPoints(clockPoints[6], clockPoints[10]);
+    stage1GroupTemporary.add(bottomLeftLine.draw(two));
+
+    let topRightLine = Line.fromPoints(clockPoints[0], clockPoints[3]);
+    stage1GroupTemporary.add(topRightLine.draw(two));
+
+    let bottomRightLine = Line.fromPoints(clockPoints[2], clockPoints[6]);
+    stage1GroupTemporary.add(bottomRightLine.draw(two));
+
+    let intersectionLeft= topLeftLine.intersection(bottomLeftLine);
+    stage1GroupTemporary.add(intersectionLeft.draw(two));
+    let intersectionRight= topRightLine.intersection(bottomRightLine);
+    stage1GroupTemporary.add(intersectionRight.draw(two));
+
+    let xOffset = getCircleWidthForHeight(this.circleRadius, intersectionRight.y - centreY);
+    let left = new Point(centreX - xOffset, intersectionRight.y);
+    let right = new Point(centreX + xOffset, intersectionRight.y);
+
+    let femTriangle1 = Triangle.fromPoints(left, right, clockPoints[6]);
+
+    let stage1GroupPermanent= two.makeGroup(this.circle, this.bindu);
+    stage1GroupPermanent.add(femTriangle1.draw(two));
+    this.addRevealedShape(stage1GroupPermanent, 21);
+
+    let centreLine = Line.fromPoints(clockPoints[0], clockPoints[6]);
+    stage1GroupTemporary.add(centreLine.draw(two));
+
+    let centreIntersection = new Point(centreX, intersectionRight.y);
+    let mascLineLeftLine = Line.fromPoints(clockPoints[8], centreIntersection);
+    stage1GroupTemporary.add(mascLineLeftLine.draw(two));
+
+    let mascLineRightLine = Line.fromPoints(clockPoints[4], centreIntersection);
+    stage1GroupTemporary.add(mascLineRightLine.draw(two));
+
+    let femTriangle1Left= Line.fromPoints(left, clockPoints[6]);
+    let femTriangle1Right= Line.fromPoints(right, clockPoints[6]);
+    //
+    let mascIntersectionLeft= mascLineLeftLine.intersection(femTriangle1Left);
+    stage1GroupTemporary.add(mascIntersectionLeft.draw(two));
+    let mascIntersectionRight= mascLineRightLine.intersection(femTriangle1Right);
+    stage1GroupTemporary.add(mascIntersectionRight.draw(two));
+
+    let xOffsetMasc = getCircleWidthForHeight(this.circleRadius, mascIntersectionRight.y + centreY);
+    let leftMasc = new Point(centreX - xOffset, mascIntersectionRight.y);
+    let rightMasc = new Point(centreX + xOffset, mascIntersectionRight.y);
+
+    let mascTriangle1 = Triangle.fromPoints(leftMasc, rightMasc, clockPoints[0]);
+
+    stage1GroupPermanent.add(mascTriangle1.draw(two));
+
+    this.addRevealedShape(stage1GroupTemporary, 20);
+    this.addHiddenShape(stage1GroupTemporary, 200);
+
     // // stage1GroupPermanent.remove();
     //
     // return stage1GroupPermanent;
+  }
+
+  pointOnCircle(index) {
+    let clock1Angle = index * 2*Math.PI / 12 - Math.PI / 2;
+    let clock1X = this.circleRadius * Math.cos(clock1Angle);
+    let clock1Y = this.circleRadius * Math.sin(clock1Angle);
+    return new Point(this.centreX  + clock1X, this.centreY + clock1Y);
   }
 }
 
@@ -238,9 +364,9 @@ class FullStage extends BaseStage {
 
     var centreX = two.width * 0.5;
     var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
-    var circle = two.makeCircle(centreX, centreY, this.circleRadius);
-    circle.stroke = 'orangered';
-    circle.linewidth = 5;
+    // var circle = two.makeCircle(centreX, centreY, this.circleRadius);
+    // circle.stroke = 'orangered';
+    // circle.linewidth = 5;
     // circle.fill = '#FF8000';
     console.log("two.width: " + two.width);
     console.log("two.height: " + two.height);
@@ -248,9 +374,9 @@ class FullStage extends BaseStage {
     console.log("centreY: " + centreY);
     console.log("circleRadius: " + this.circleRadius);
 
-    var bindu = two.makeCircle(centreX, centreY, 3);
-    bindu.stroke = 'black';
-    bindu.linewidth = 3;
+    // var bindu = two.makeCircle(centreX, centreY, 3);
+    // bindu.stroke = 'black';
+    // bindu.linewidth = 3;
 
     // let yOffset = Math.sin(2 * Math.PI / 24) * this.circleRadius;
     // let xOffset = Math.cos(2 * Math.PI / 24) * this.circleRadius;
