@@ -195,24 +195,44 @@ class BaseStage {
   }
 
   addRevealedShape(shape, time) {
-    this.revealedShapes.set(time, shape);
+    let shapes = this.revealedShapes.get(time);
+    if (shapes) {
+      shapes.push(shape);
+    } else {
+      shapes = [shape]
+    }
+    this.revealedShapes.set(time, shapes);
   }
 
   addHiddenShape(shape, time) {
-    this.hiddenShapes.set(time, shape);
+    let shapes = this.hiddenShapes.get(time);
+    if (shapes) {
+      shapes.push(shape);
+    } else {
+      shapes = [shape]
+    }
+    this.hiddenShapes.set(time, shapes);
   }
 
   update(frameCount) {
     var that = this;
-    this.revealedShapes.forEach((shape, time) => {
+    this.revealedShapes.forEach((shapes, time) => {
       if(frameCount >= that.revealTime + time) {
-        shape.visible = true;
+        shapes.forEach(
+            (shape)=> {
+              shape.visible = true;
+            }
+        );
       }
     });
 
-    this.hiddenShapes.forEach((shape, time) => {
+    this.hiddenShapes.forEach((shapes, time) => {
       if(frameCount >= that.revealTime + time) {
-        shape.visible = false;
+        shapes.forEach(
+            (shape)=> {
+              shape.visible = false;
+            }
+        );
       }
     });
   }
@@ -262,32 +282,32 @@ class Stage1 extends BaseStage {
 
     this.circleRadius = circleRadius;
 
-    let stage1GroupTemporary = two.makeGroup();
-    stage1GroupTemporary.visible = false;
+    let stage1GroupTemporary1 = two.makeGroup();
+    stage1GroupTemporary1.visible = false;
 
     let clockPoints = [];
     for(let i= 0; i < 12; i++) {
       let point = this.pointOnCircle(i);
       clockPoints.push(point);
-      stage1GroupTemporary.add(point.draw(two));
+      stage1GroupTemporary1.add(point.draw(two));
     }
 
     let topLeftLine = Line.fromPoints(clockPoints[0], clockPoints[9]);
-    stage1GroupTemporary.add(topLeftLine.draw(two));
+    stage1GroupTemporary1.add(topLeftLine.draw(two));
 
     let bottomLeftLine = Line.fromPoints(clockPoints[6], clockPoints[10]);
-    stage1GroupTemporary.add(bottomLeftLine.draw(two));
+    stage1GroupTemporary1.add(bottomLeftLine.draw(two));
 
     let topRightLine = Line.fromPoints(clockPoints[0], clockPoints[3]);
-    stage1GroupTemporary.add(topRightLine.draw(two));
+    stage1GroupTemporary1.add(topRightLine.draw(two));
 
     let bottomRightLine = Line.fromPoints(clockPoints[2], clockPoints[6]);
-    stage1GroupTemporary.add(bottomRightLine.draw(two));
+    stage1GroupTemporary1.add(bottomRightLine.draw(two));
 
     let intersectionLeft= topLeftLine.intersection(bottomLeftLine);
-    stage1GroupTemporary.add(intersectionLeft.draw(two));
+    stage1GroupTemporary1.add(intersectionLeft.draw(two));
     let intersectionRight= topRightLine.intersection(bottomRightLine);
-    stage1GroupTemporary.add(intersectionRight.draw(two));
+    stage1GroupTemporary1.add(intersectionRight.draw(two));
 
     let xOffset = getCircleWidthForHeight(this.circleRadius, intersectionRight.y - centreY);
     let left = new Point(centreX - xOffset, intersectionRight.y);
@@ -297,25 +317,27 @@ class Stage1 extends BaseStage {
 
     let stage1GroupPermanent= two.makeGroup(this.circle, this.bindu);
     stage1GroupPermanent.add(femTriangle1.draw(two));
-    this.addRevealedShape(stage1GroupPermanent, 21);
+
+    let stage1GroupTemporary2 = two.makeGroup();
+    stage1GroupTemporary2.visible = false;
 
     let centreLine = Line.fromPoints(clockPoints[0], clockPoints[6]);
-    stage1GroupTemporary.add(centreLine.draw(two));
+    stage1GroupTemporary2.add(centreLine.draw(two));
 
     let centreIntersection = new Point(centreX, intersectionRight.y);
     let mascLineLeftLine = Line.fromPoints(clockPoints[8], centreIntersection);
-    stage1GroupTemporary.add(mascLineLeftLine.draw(two));
+    stage1GroupTemporary2.add(mascLineLeftLine.draw(two));
 
     let mascLineRightLine = Line.fromPoints(clockPoints[4], centreIntersection);
-    stage1GroupTemporary.add(mascLineRightLine.draw(two));
+    stage1GroupTemporary2.add(mascLineRightLine.draw(two));
 
     let femTriangle1Left= Line.fromPoints(left, clockPoints[6]);
     let femTriangle1Right= Line.fromPoints(right, clockPoints[6]);
     //
     let mascIntersectionLeft= mascLineLeftLine.intersection(femTriangle1Left);
-    stage1GroupTemporary.add(mascIntersectionLeft.draw(two));
+    stage1GroupTemporary2.add(mascIntersectionLeft.draw(two));
     let mascIntersectionRight= mascLineRightLine.intersection(femTriangle1Right);
-    stage1GroupTemporary.add(mascIntersectionRight.draw(two));
+    stage1GroupTemporary2.add(mascIntersectionRight.draw(two));
 
     let xOffsetMasc = getCircleWidthForHeight(this.circleRadius, mascIntersectionRight.y + centreY);
     let leftMasc = new Point(centreX - xOffset, mascIntersectionRight.y);
@@ -325,8 +347,12 @@ class Stage1 extends BaseStage {
 
     stage1GroupPermanent.add(mascTriangle1.draw(two));
 
-    this.addRevealedShape(stage1GroupTemporary, 20);
-    this.addHiddenShape(stage1GroupTemporary, 200);
+    this.addRevealedShape(stage1GroupTemporary1, 20);
+    this.addHiddenShape(stage1GroupTemporary1, 200);
+    this.addRevealedShape(stage1GroupTemporary2, 60);
+    this.addHiddenShape(stage1GroupTemporary2, 200);
+
+    this.addRevealedShape(stage1GroupPermanent, 100);
 
     // // stage1GroupPermanent.remove();
     //
