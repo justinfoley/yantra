@@ -1,17 +1,19 @@
 export class Yantra {
   constructor(circleRadius, two) {
+    this.centreX = two.width * 0.5;
+    this.centreY = two.height * 0.5;
     this.circleRadius = 300;
     this.objects = []
     this.two = two;
 
     let revealTime = 50;
-    this.stage0 = new Stage0(two, revealTime, this.circleRadius);
+    this.stage0 = new Stage0(two, revealTime, this);
 
     revealTime += 50;
-    this.stage1 = new Stage1(two, revealTime, this.circleRadius);
+    this.stage1 = new Stage1(two, revealTime, this);
 
     revealTime += 1000;
-    this.fullStage = new FullStage(two, revealTime);
+    this.fullStage = new FullStage(two, revealTime, this);
 
     // Hide everything at first - so we can layer animation on existing shapes
     this.two.scene.children.forEach(function(shape) {
@@ -239,20 +241,14 @@ class BaseStage {
 }
 
 class Stage0 extends BaseStage {
-  constructor(two, revealTime, circleRadius) {
+  constructor(two, revealTime, yantra) {
     super(two, revealTime);
 
-    var centreX = two.width * 0.5;
-    var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
-
-    this.centreX = centreX;
-    this.centreY = centreY;
-
-    this.circleRadius = circleRadius;
-    this.circle = two.makeCircle(centreX, centreY, this.circleRadius);
-    this.circle.stroke = 'orangered';
-    this.circle.linewidth = 5;
-    this.circle.visible = false;
+    this.yantra = yantra;
+    this.yantra.circle = two.makeCircle(this.yantra.centreX, this.yantra.centreY, this.yantra.circleRadius);
+    this.yantra.circle.stroke = 'orangered';
+    this.yantra.circle.linewidth = 5;
+    this.yantra.circle.visible = false;
     // circle.fill = '#FF8000';
     // console.log("two.width: " + two.width);
     // console.log("two.height: " + two.height);
@@ -260,27 +256,21 @@ class Stage0 extends BaseStage {
     // console.log("centreY: " + centreY);
     // console.log("circleRadius: " + this.circleRadius);
 
-    this.bindu = two.makeCircle(centreX, centreY, 3);
-    this.bindu.stroke = 'black';
-    this.bindu.linewidth = 3;
-    this.bindu.visible = false;
+    this.yantra.bindu = two.makeCircle(this.yantra.centreX, this.yantra.centreY, 3);
+    this.yantra.bindu.stroke = 'black';
+    this.yantra.bindu.linewidth = 3;
+    this.yantra.bindu.visible = false;
 
-    this.addRevealedShape(this.circle, 0);
-    this.addRevealedShape(this.bindu, 50);
+    this.addRevealedShape(this.yantra.circle, 0);
+    this.addRevealedShape(this.yantra.bindu, 50);
   }
 }
 
 class Stage1 extends BaseStage {
-  constructor(two, revealTime, circleRadius) {
+  constructor(two, revealTime, yantra) {
     super(two, revealTime);
 
-    var centreX = two.width * 0.5;
-    var centreY = two.height * 0.5; // - this.circleRadius * 1.25;
-
-    this.centreX = centreX;
-    this.centreY = centreY;
-
-    this.circleRadius = circleRadius;
+    this.yantra = yantra;
 
     let stage1GroupTemporary1 = two.makeGroup();
     stage1GroupTemporary1.visible = false;
@@ -309,14 +299,15 @@ class Stage1 extends BaseStage {
     let intersectionRight= topRightLine.intersection(bottomRightLine);
     stage1GroupTemporary1.add(intersectionRight.draw(two));
 
-    let xOffset = getCircleWidthForHeight(this.circleRadius, intersectionRight.y - centreY);
-    let left = new Point(centreX - xOffset, intersectionRight.y);
-    let right = new Point(centreX + xOffset, intersectionRight.y);
+    let xOffset = getCircleWidthForHeight(this.yantra.circleRadius, intersectionRight.y - this.yantra.centreY);
+    let left = new Point(this.yantra.centreX - xOffset, intersectionRight.y);
+    let right = new Point(this.yantra.centreX + xOffset, intersectionRight.y);
 
-    let femTriangle1 = Triangle.fromPoints(left, right, clockPoints[6]);
+    this.yantra.femTriangle1 = Triangle.fromPoints(left, right, clockPoints[6]);
 
-    let stage1GroupPermanent= two.makeGroup(this.circle, this.bindu);
-    stage1GroupPermanent.add(femTriangle1.draw(two));
+    // let stage1GroupPermanent= two.makeGroup(this.yantra.circle, this.yantra.bindu);
+    let stage1GroupPermanent= two.makeGroup();
+    stage1GroupPermanent.add(this.yantra.femTriangle1.draw(two));
 
     let stage1GroupTemporary2 = two.makeGroup();
     stage1GroupTemporary2.visible = false;
@@ -324,7 +315,7 @@ class Stage1 extends BaseStage {
     let centreLine = Line.fromPoints(clockPoints[0], clockPoints[6]);
     stage1GroupTemporary2.add(centreLine.draw(two));
 
-    let centreIntersection = new Point(centreX, intersectionRight.y);
+    let centreIntersection = new Point(this.yantra.centreX, intersectionRight.y);
     let mascLineLeftLine = Line.fromPoints(clockPoints[8], centreIntersection);
     stage1GroupTemporary2.add(mascLineLeftLine.draw(two));
 
@@ -339,13 +330,13 @@ class Stage1 extends BaseStage {
     let mascIntersectionRight= mascLineRightLine.intersection(femTriangle1Right);
     stage1GroupTemporary2.add(mascIntersectionRight.draw(two));
 
-    let xOffsetMasc = getCircleWidthForHeight(this.circleRadius, mascIntersectionRight.y + centreY);
-    let leftMasc = new Point(centreX - xOffset, mascIntersectionRight.y);
-    let rightMasc = new Point(centreX + xOffset, mascIntersectionRight.y);
+    let xOffsetMasc = getCircleWidthForHeight(this.yantra.circleRadius, mascIntersectionRight.y + this.yantra.centreY);
+    let leftMasc = new Point(this.yantra.centreX - xOffset, mascIntersectionRight.y);
+    let rightMasc = new Point(this.yantra.centreX + xOffset, mascIntersectionRight.y);
 
-    let mascTriangle1 = Triangle.fromPoints(leftMasc, rightMasc, clockPoints[0]);
+    this.yantra.mascTriangle1 = Triangle.fromPoints(leftMasc, rightMasc, clockPoints[0]);
 
-    stage1GroupPermanent.add(mascTriangle1.draw(two));
+    stage1GroupPermanent.add(this.yantra.mascTriangle1.draw(two));
 
     this.addRevealedShape(stage1GroupTemporary1, 20);
     this.addHiddenShape(stage1GroupTemporary1, 200);
@@ -361,9 +352,9 @@ class Stage1 extends BaseStage {
 
   pointOnCircle(index) {
     let clock1Angle = index * 2*Math.PI / 12 - Math.PI / 2;
-    let clock1X = this.circleRadius * Math.cos(clock1Angle);
-    let clock1Y = this.circleRadius * Math.sin(clock1Angle);
-    return new Point(this.centreX  + clock1X, this.centreY + clock1Y);
+    let clock1X = this.yantra.circleRadius * Math.cos(clock1Angle);
+    let clock1Y = this.yantra.circleRadius * Math.sin(clock1Angle);
+    return new Point(this.yantra.centreX  + clock1X, this.yantra.centreY + clock1Y);
   }
 }
 
@@ -373,10 +364,11 @@ function getCircleWidthForHeight(radius, height) {
 }
 
 class FullStage extends BaseStage {
-  constructor(two, revealTime) {
+  constructor(two, revealTime, yantra) {
     super(two, revealTime);
 
-    this.circleRadius = 300;
+    this.yantra = yantra;
+    this.circleRadius = this.yantra.circleRadius;
 
     let A = new Point(1, 1);
     let B = new Point(4, 4);
