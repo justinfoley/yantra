@@ -4,6 +4,7 @@ export class Yantra {
   constructor(circleRadius, two) {
     this.centreX = two.width * 0.5;
     this.centreY = two.height * 0.5;
+    this.centre = new Point(this.centreX, this.centreY);
     this.circleRadius = 300;
     this.objects = []
     this.two = two;
@@ -45,6 +46,10 @@ export class Triangle {
     this.one = new Point(points[0][0], points[0][1]);
     this.two = new Point(points[1][0], points[1][1]);
     this.three = new Point(points[2][0], points[2][1]);
+
+    this.horizontalLine = new Line(this.points[0][0], this.points[0][1], this.points[1][0], this.points[1][1]);
+    this.leftLine = new Line(this.points[0][0], this.points[0][1], this.points[2][0], this.points[2][1]);
+    this.rightLine = new Line(this.points[1][0], this.points[1][1], this.points[2][0], this.points[2][1]);
   }
 
   static fromPoints(one, two, three) {
@@ -199,4 +204,18 @@ export class Line {
         }
     }
 
+  extendToY(y) {
+    let yLen = this.endY - this.startY;
+    let xLen = this.endX - this.startX;
+    let gradient = yLen / xLen;
+
+    let angle = Math.atan2(yLen, xLen);
+    // if(angle > Math.PI / 2) {
+    angle = Math.PI / 2 - angle;
+    // }
+
+    let newX = this.startX + Math.tan(angle) * (y - this.startY);
+
+    return new Point(newX, y);
+  }
 }
