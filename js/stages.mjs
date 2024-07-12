@@ -183,8 +183,12 @@ export class Stage2 extends BaseStage {
 
     this.yantra = yantra;
 
+    let stage2GroupPermanent= two.makeGroup();
+
     let stage2GroupTemporary1 = two.makeGroup();
     stage2GroupTemporary1.visible = false;
+
+
 
     // TODO - take point on fem1 on right
     // rotate it through PI / 6 - sin=0.5 clockwise
@@ -306,11 +310,64 @@ export class Stage2 extends BaseStage {
     stage2GroupTemporary1.add(masc3RightNewEnd.draw(two));
 
     this.yantra.mascTriangle3 = Triangle.fromPoints(masc3TopPoint, masc3LeftLine.extendToY(masc3BottomPoint.y), masc3RightLine.extendToY(masc3BottomPoint.y));
-    stage2GroupTemporary1.add(this.yantra.mascTriangle3.draw(two));
-    //     // console.log(this.yantra.mascTriangle3);
+
+    stage2GroupPermanent.add(this.yantra.mascTriangle3.draw(two));
+
+    // Masc2 closing
+    // fem 1 + masc3
+
+    let masc3Fem1LeftIntersect = masc3LeftLine.intersection(this.yantra.femTriangle1.leftLine);
+    stage2GroupTemporary1.add(masc3Fem1LeftIntersect.draw(two));
+
+    let masc3Fem1RightIntersect = masc3RightLine.intersection(this.yantra.femTriangle1.rightLine);
+    stage2GroupTemporary1.add(masc3Fem1RightIntersect.draw(two));
+
+    let masc2LeftNewEnd = masc2LeftLine.extendToY(masc3Fem1LeftIntersect.y);
+    stage2GroupTemporary1.add(masc2LeftNewEnd.draw(two));
+
+    let masc2RightNewEnd = masc2RightLine.extendToY(masc3Fem1RightIntersect.y);
+    stage2GroupTemporary1.add(masc2RightNewEnd.draw(two));
+
+
+    this.yantra.mascTriangle2 = Triangle.fromPoints(masc2TopPoint, masc2LeftNewEnd, masc2RightNewEnd);
+    stage2GroupPermanent.add(this.yantra.mascTriangle2.draw(two));
+
+    //Form fem3 - fem1 and masc2 intersections cross
+    let stage2GroupTemporary2 = two.makeGroup();
+    stage2GroupTemporary2.visible = false;
+
+    let masc2Fem1LeftBottomIntersect = masc2LeftLine.intersection(this.yantra.femTriangle1.leftLine);
+    stage2GroupTemporary2.add(masc2Fem1LeftBottomIntersect.draw(two));
+
+    let masc2Fem1RightBottomIntersect = masc2RightLine.intersection(this.yantra.femTriangle1.rightLine);
+    stage2GroupTemporary2.add(masc2Fem1RightBottomIntersect.draw(two));
+
+    let masc2Fem1LeftTopIntersect = masc2LeftLine.intersection(this.yantra.femTriangle1.horizontalLine);
+    stage2GroupTemporary2.add(masc2Fem1LeftTopIntersect.draw(two));
+
+    let masc2Fem1RightTopIntersect = masc2RightLine.intersection(this.yantra.femTriangle1.horizontalLine);
+    stage2GroupTemporary2.add(masc2Fem1RightTopIntersect.draw(two));
+
+    let fem2CrossLeft = Line.fromPoints(masc2Fem1LeftBottomIntersect, masc2Fem1RightTopIntersect);
+    stage2GroupTemporary2.add(fem2CrossLeft.draw(two));
+    let fem2CrossRight = Line.fromPoints(masc2Fem1RightBottomIntersect, masc2Fem1LeftTopIntersect);
+    stage2GroupTemporary2.add(fem2CrossRight.draw(two));
+
+    //fem2 and cross
+    let fem2LeftCrossIntersect = fem2LeftLine.intersection(fem2CrossLeft);
+    stage2GroupTemporary2.add(fem2LeftCrossIntersect.draw(two));
+
+    let fem2RightrossIntersect = fem2RightLine.intersection(fem2CrossRight);
+    stage2GroupTemporary2.add(fem2RightrossIntersect.draw(two));
+
+    let fem3HorizontalLine = Line.fromPoints(fem2LeftCrossIntersect, fem2RightrossIntersect);
+    stage2GroupTemporary2.add(fem3HorizontalLine.draw(two));
 
     this.addRevealedShape(stage2GroupTemporary1, 20);
-    // this.addHiddenShape(stage2GroupTemporary1, 200);
+    this.addHiddenShape(stage2GroupTemporary1, 150);
+    this.addRevealedShape(stage2GroupTemporary2, 150);
+
+    this.addRevealedShape(stage2GroupPermanent, 100);
 
   }
 }
