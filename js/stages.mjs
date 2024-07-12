@@ -350,6 +350,7 @@ export class Stage2 extends BaseStage {
 
     let fem2CrossLeft = Line.fromPoints(masc2Fem1LeftBottomIntersect, masc2Fem1RightTopIntersect);
     stage2GroupTemporary2.add(fem2CrossLeft.draw(two));
+
     let fem2CrossRight = Line.fromPoints(masc2Fem1RightBottomIntersect, masc2Fem1LeftTopIntersect);
     stage2GroupTemporary2.add(fem2CrossRight.draw(two));
 
@@ -360,27 +361,47 @@ export class Stage2 extends BaseStage {
     let fem2RightrossIntersect = fem2RightLine.intersection(fem2CrossRight);
     stage2GroupTemporary2.add(fem2RightrossIntersect.draw(two));
 
-    let fem3HorizontalLine = Line.fromPoints(fem2LeftCrossIntersect, fem2RightrossIntersect);
-    stage2GroupTemporary2.add(fem3HorizontalLine.draw(two));
+    // let fem3HorizontalLine = Line.fromPoints(fem2LeftCrossIntersect, fem2RightrossIntersect);
+    // stage2GroupTemporary2.add(fem3HorizontalLine.draw(two));
+
+    this.yantra.mascTriangle4Horizontal = Line.fromPoints(fem2LeftCrossIntersect, fem2RightrossIntersect);
+    stage2GroupPermanent.add(this.yantra.mascTriangle4Horizontal.draw(two));
 
     let fem3BottomPoint = new Point(centre.x, fem2LeftCrossIntersect.y);
     stage2GroupTemporary2.add(fem3BottomPoint.draw(two));
 
     let fem3LeftLine = Line.fromPoints(masc2Fem1LeftTopIntersect, fem3BottomPoint);
-    // stage2GroupTemporary2.add(fem3LeftLine.draw(two));
+    stage2GroupTemporary2.add(fem3LeftLine.draw(two));
 
     let fem3RightLine = Line.fromPoints(masc2Fem1RightTopIntersect, fem3BottomPoint);
-    // stage2GroupTemporary2.add(fem3RightLine.draw(two));
+    stage2GroupTemporary2.add(fem3RightLine.draw(two));
 
     let fem3RightLineExtended= fem3RightLine.extendToY(topLineMarker.y);
-    // stage2GroupTemporary2.add(fem3RightLineExtended.draw(two));
+    stage2GroupTemporary2.add(fem3RightLineExtended.draw(two));
 
     let fem3LeftLineExtended= fem3LeftLine.extendToY(topLineMarker.y);
-    // stage2GroupTemporary2.add(fem3LeftLineExtended.draw(two));
+    stage2GroupTemporary2.add(fem3LeftLineExtended.draw(two));
 
     this.yantra.femTriangle3 = Triangle.fromPoints(fem3BottomPoint, fem3LeftLineExtended.end, fem3RightLineExtended.end);
     stage2GroupPermanent.add(this.yantra.femTriangle3.draw(two));
 
+    // masc1, fem3
+
+    let fem2TopLeft = fem3LeftLineExtended.intersection(this.yantra.mascTriangle1.leftLine);
+    stage2GroupTemporary2.add(fem2TopLeft.draw(two));
+
+    let fem2TopRight = fem3RightLineExtended.intersection(this.yantra.mascTriangle1.rightLine);
+    stage2GroupTemporary2.add(fem2TopRight.draw(two));
+
+// fem2RightLine
+    let fem2LeftLineExtended = fem2LeftLine.extendToY(fem2TopLeft.y);
+    stage2GroupTemporary2.add(fem2LeftLineExtended.draw(two));
+
+    let fem2RightLineExtended = fem2RightLine.extendToY(fem2TopRight.y);
+    stage2GroupTemporary2.add(fem2RightLineExtended.draw(two));
+
+    this.yantra.femTriangle2 = Triangle.fromPoints(fem2LeftLineExtended.start, fem2LeftLineExtended.end, fem2RightLineExtended.end);
+    stage2GroupPermanent.add(this.yantra.femTriangle2.draw(two));
 
     this.addRevealedShape(stage2GroupTemporary1, 20);
     this.addHiddenShape(stage2GroupTemporary1, 150);
@@ -388,7 +409,33 @@ export class Stage2 extends BaseStage {
     this.addHiddenShape(stage2GroupTemporary2, 200);
 
     this.addRevealedShape(stage2GroupPermanent, 100);
+  }
+}
 
+export class Stage3 extends BaseStage {
+  constructor(two, revealTime, yantra) {
+    super(two, revealTime);
+
+    this.yantra = yantra;
+
+    let stage3GroupPermanent = two.makeGroup();
+
+    let stage3GroupTemporary1 = two.makeGroup();
+    stage3GroupTemporary1.visible = false;
+
+    let masc4Top = new Point(this.yantra.centreX, this.yantra.femTriangle2.two.y);
+    stage3GroupTemporary1.add(masc4Top.draw(two));
+
+    this.yantra.mascTriangle4 = Triangle.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.start,  this.yantra.mascTriangle4Horizontal.end);
+    stage3GroupPermanent.add(this.yantra.mascTriangle4.draw(two));
+
+
+
+
+    this.addRevealedShape(stage3GroupTemporary1, 20);
+    this.addHiddenShape(stage3GroupTemporary1, 150);
+
+    this.addRevealedShape(stage3GroupPermanent, 100);
   }
 }
 

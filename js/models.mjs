@@ -1,4 +1,4 @@
-import {Stage0, Stage1, Stage2, FullStage} from "./stages.mjs";
+import {Stage0, Stage1, Stage2, Stage3, FullStage} from "./stages.mjs";
 
 export class Yantra {
   constructor(circleRadius, two) {
@@ -18,6 +18,9 @@ export class Yantra {
     revealTime += 200;
     this.stage2 = new Stage2(two, revealTime, this);
 
+    revealTime += 200;
+    this.stage3 = new Stage3(two, revealTime, this);
+
     revealTime += 1000;
     this.fullStage = new FullStage(two, revealTime, this);
 
@@ -35,6 +38,7 @@ export class Yantra {
     this.stage0.update(frameCount);
     this.stage1.update(frameCount);
     this.stage2.update(frameCount);
+    this.stage3.update(frameCount);
     // this.fullStage.update(frameCount);
   }
 
