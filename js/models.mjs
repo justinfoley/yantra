@@ -1,4 +1,4 @@
-import {Stage0, Stage1, Stage2, Stage3, FullStage} from "./stages.mjs";
+import {Stage0, Stage1, Stage2, Stage3} from "./stages.mjs";
 
 export class Yantra {
   constructor(circleRadius, two) {
@@ -21,9 +21,6 @@ export class Yantra {
     revealTime += 200;
     this.stage3 = new Stage3(two, revealTime, this);
 
-    revealTime += 1000;
-    this.fullStage = new FullStage(two, revealTime, this);
-
     // Hide everything at first - so we can layer animation on existing shapes
     this.two.scene.children.forEach(function(shape) {
       shape.visible = false;
@@ -39,7 +36,6 @@ export class Yantra {
     this.stage1.update(frameCount);
     this.stage2.update(frameCount);
     this.stage3.update(frameCount);
-    // this.fullStage.update(frameCount);
   }
 
 }
