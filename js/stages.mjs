@@ -365,7 +365,8 @@ export class Stage2 extends BaseStage {
     // stage2GroupTemporary2.add(fem3HorizontalLine.draw(two));
 
     this.yantra.mascTriangle4Horizontal = Line.fromPoints(fem2LeftCrossIntersect, fem2RightrossIntersect);
-    stage2GroupPermanent.add(this.yantra.mascTriangle4Horizontal.draw(two));
+    // stage2GroupPermanent.add(this.yantra.mascTriangle4Horizontal.draw(two));
+    stage2GroupTemporary2.add(this.yantra.mascTriangle4Horizontal.draw(two));
 
     let fem3BottomPoint = new Point(centre.x, fem2LeftCrossIntersect.y);
     stage2GroupTemporary2.add(fem3BottomPoint.draw(two));
