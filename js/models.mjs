@@ -245,4 +245,31 @@ export class Line {
 
     return Line.fromPoints(start, new Point(newX, y));
   }
+
+  lengthen(factor) {
+    let yLen = this.endY - this.startY;
+    let xLen = this.endX - this.startX;
+    let gradient = yLen / xLen;
+
+    let length = (factor / 2) * Math.sqrt(Math.pow(xLen, 2) + Math.pow(yLen, 2));
+
+    let angle = Math.atan2(yLen, xLen);
+    // if(angle > Math.PI / 2) {
+    // angle = Math.PI / 2 - angle;
+    // }
+
+    // let newX = this.startX + Math.tan(angle) * (y - this.startY);
+    //
+    // let start = new Point(this.startX, this.startY);
+    // if(Math.abs(y - this.endY) > Math.abs(y - this.startY)) {
+    //   start = new Point(this.endX, this.endY);
+    // }
+    //
+    // return Line.fromPoints(start, new Point(newX, y));
+
+    let newStart = new Point(this.startX - length * Math.cos(angle), this.startY - length * Math.sin(angle));
+    let newEnd = new Point(this.endX + length * Math.cos(angle), this.endY + length * Math.sin(angle));
+
+    return Line.fromPoints(newStart, newEnd);
+  }
 }

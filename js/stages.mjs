@@ -424,12 +424,47 @@ export class Stage3 extends BaseStage {
     stage3GroupTemporary1.visible = false;
 
     let masc4Top = new Point(this.yantra.centreX, this.yantra.femTriangle2.two.y);
-    stage3GroupTemporary1.add(masc4Top.draw(two));
+    // stage3GroupTemporary1.add(masc4Top.draw(two));
+
 
     this.yantra.mascTriangle4 = Triangle.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.start,  this.yantra.mascTriangle4Horizontal.end);
     stage3GroupPermanent.add(this.yantra.mascTriangle4.draw(two));
 
+    // Fem4 - fem 3 masc 4
 
+    let masc4Left = Line.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.end);
+    let masc4Right = Line.fromPoints(this.yantra.mascTriangle4.one, this.yantra.mascTriangle4.two);
+        // Line.fromPoints(this.yantra.mascTriangle4Horizontal.start, masc4Top);
+    stage3GroupTemporary1.add(masc4Right.draw(two));
+
+    let fem4TopLeft = this.yantra.femTriangle3.leftLine.intersection(masc4Left);
+    stage3GroupTemporary1.add(fem4TopLeft.draw(two));
+
+    let fem4TopRight = this.yantra.femTriangle3.horizontalLine.intersection(masc4Right);
+    stage3GroupTemporary1.add(fem4TopRight.draw(two));
+
+    let fem4HorizontalLine = Line.fromPoints(fem4TopLeft, fem4TopRight);
+    stage3GroupTemporary1.add(fem4HorizontalLine.draw(two));
+
+    let fem4HorizontalLineLonger= fem4HorizontalLine.lengthen(2);
+    stage3GroupTemporary1.add(fem4HorizontalLineLonger.draw(two));
+
+    let fem4HorizontalLeft = fem4HorizontalLineLonger.intersection(this.yantra.mascTriangle2.leftLine);
+    stage3GroupTemporary1.add(fem4HorizontalLeft.draw(two));
+
+    let fem4HorizontalRight = fem4HorizontalLineLonger.intersection(this.yantra.mascTriangle2.horizontalLine);
+    stage3GroupTemporary1.add(fem4HorizontalRight.draw(two));
+
+    let fem4Bottom = new Point(this.yantra.centreX, this.yantra.mascTriangle2.two.y);
+    stage3GroupTemporary1.add(fem4Bottom.draw(two));
+
+    this.yantra.femTriangle4 = Triangle.fromPoints(fem4HorizontalLeft, fem4HorizontalRight, fem4Bottom);
+    stage3GroupPermanent.add(this.yantra.femTriangle4.draw(two));
+
+
+// fem2RightLine
+//     let fem2LeftLineExtended = fem2LeftLine.extendToY(fem2TopLeft.y);
+//     stage2GroupTemporary2.add(fem2LeftLineExtended.draw(two));
 
 
     this.addRevealedShape(stage3GroupTemporary1, 20);
