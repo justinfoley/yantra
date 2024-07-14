@@ -47,9 +47,9 @@ export class Triangle {
     this.two = new Point(points[1][0], points[1][1]);
     this.three = new Point(points[2][0], points[2][1]);
 
-    this.horizontalLine = new Line(this.points[0][0], this.points[0][1], this.points[1][0], this.points[1][1]);
-    this.leftLine = new Line(this.points[0][0], this.points[0][1], this.points[2][0], this.points[2][1]);
-    this.rightLine = new Line(this.points[1][0], this.points[1][1], this.points[2][0], this.points[2][1]);
+    this.lineOne = new Line(this.points[0][0], this.points[0][1], this.points[1][0], this.points[1][1]);
+    this.lineTwo = new Line(this.points[0][0], this.points[0][1], this.points[2][0], this.points[2][1]);
+    this.lineThree = new Line(this.points[1][0], this.points[1][1], this.points[2][0], this.points[2][1]);
   }
 
   static fromPoints(one, two, three) {
@@ -63,70 +63,6 @@ export class Triangle {
     var right = two.makeLine(this.points[1][0], this.points[1][1], this.points[2][0], this.points[2][1]);
     let group = two.makeGroup(top, left, right);
     return group;
-  }
-}
-
-class FeminineTriangle extends Triangle {
-  constructor(centreX, centreY, radius, xOffset, yOffset) {
-    let left= [centreX - xOffset, centreY - yOffset];
-    let right= [centreX + xOffset, centreY - yOffset]
-    let bottom = [centreX, centreY + radius]
-
-    let points = [left, right, bottom];
-
-    super(points);
-
-    this.left = left;
-    this.right = right;
-    this.bottom = bottom;
-  }
-}
-
-export class FeminineTriangle2 extends Triangle {
-  constructor(centreX, centreY, radius, xOffset, yOffsetStart, yOffsetEnd) {
-    let left= [centreX - xOffset, centreY - yOffsetStart];
-    let right= [centreX + xOffset, centreY - yOffsetStart]
-    let bottom = [centreX, centreY - yOffsetEnd]
-
-    let points = [left, right, bottom];
-
-    super(points);
-
-    this.left = left;
-    this.right = right;
-    this.bottom = bottom;
-  }
-}
-
-export class MasculineTriangle2 extends Triangle {
-  constructor(centreX, centreY, radius, xOffset, yOffsetStart, yOffsetEnd) {
-    let left= [centreX - xOffset, centreY + yOffsetStart];
-    let right= [centreX + xOffset, centreY + yOffsetStart]
-    let bottom = [centreX, centreY - yOffsetEnd]
-
-    let points = [left, right, bottom];
-
-    super(points);
-
-    this.left = left;
-    this.right = right;
-    this.bottom = bottom;
-  }
-}
-
-class MasculineTriangle extends Triangle {
-  constructor(centreX, centreY, radius, xOffset, yOffset) {
-    let left= [centreX - xOffset, centreY + yOffset];
-    let right= [centreX + xOffset, centreY + yOffset]
-    let bottom = [centreX, centreY - radius]
-
-    let points = [left, right, bottom];
-
-    super(points);
-
-    this.left = left;
-    this.right = right;
-    this.bottom = bottom;
   }
 }
 
