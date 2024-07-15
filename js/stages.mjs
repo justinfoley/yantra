@@ -7,6 +7,13 @@ function pointOnCircle(index, radius, centre) {
   return new Point(centre.x  + clock1X, centre.y + clock1Y);
 }
 
+function pointOnCircle2(index, count, radius, centre) {
+  let clock1Angle = index * 2*Math.PI / count - Math.PI / 2;
+  let clock1X = radius * Math.cos(clock1Angle);
+  let clock1Y = radius * Math.sin(clock1Angle);
+  return new Point(centre.x  + clock1X, centre.y + clock1Y);
+}
+
 class BaseStage {
   constructor(two, revealTime) {
     this.two = two;
@@ -428,14 +435,14 @@ export class Stage3 extends BaseStage {
     // stage3GroupTemporary1.add(masc4Top.draw(two));
 
 
-    this.yantra.mascTriangle4 = Triangle.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.start,  this.yantra.mascTriangle4Horizontal.end);
+    this.yantra.mascTriangle4 = Triangle.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.start, this.yantra.mascTriangle4Horizontal.end);
     stage3GroupPermanent.add(this.yantra.mascTriangle4.draw(two));
 
     // Fem4 - fem 3 masc 4
 
     let masc4Left = Line.fromPoints(masc4Top, this.yantra.mascTriangle4Horizontal.end);
     let masc4Right = Line.fromPoints(this.yantra.mascTriangle4.one, this.yantra.mascTriangle4.two);
-        // Line.fromPoints(this.yantra.mascTriangle4Horizontal.start, masc4Top);
+    // Line.fromPoints(this.yantra.mascTriangle4Horizontal.start, masc4Top);
     stage3GroupTemporary1.add(masc4Right.draw(two));
 
     let fem4TopLeft = this.yantra.femTriangle3.lineTwo.intersection(masc4Left);
@@ -447,7 +454,7 @@ export class Stage3 extends BaseStage {
     let fem4HorizontalLine = Line.fromPoints(fem4TopLeft, fem4TopRight);
     stage3GroupTemporary1.add(fem4HorizontalLine.draw(two));
 
-    let fem4HorizontalLineLonger= fem4HorizontalLine.lengthen(2);
+    let fem4HorizontalLineLonger = fem4HorizontalLine.lengthen(2);
     stage3GroupTemporary1.add(fem4HorizontalLineLonger.draw(two));
 
     let fem4HorizontalLeft = fem4HorizontalLineLonger.intersection(this.yantra.mascTriangle2.lineTwo);
@@ -467,7 +474,7 @@ export class Stage3 extends BaseStage {
 //     let fem2LeftLineExtended = fem2LeftLine.extendToY(fem2TopLeft.y);
 //     stage2GroupTemporary2.add(fem2LeftLineExtended.draw(two));
 
-      // Fem 5 - intersect - fem 3 + Masc 3
+    // Fem 5 - intersect - fem 3 + Masc 3
 
     let fem5ShortTopRight = this.yantra.femTriangle3.lineTwo.intersection(this.yantra.mascTriangle3.lineTwo);
     stage3GroupTemporary1.add(fem5ShortTopRight.draw(two));
@@ -478,7 +485,7 @@ export class Stage3 extends BaseStage {
     let fem5HorizontalShortLine = Line.fromPoints(fem5ShortTopLeft, fem5ShortTopRight);
     stage3GroupTemporary1.add(fem5HorizontalShortLine.draw(two));
 
-    let fem5HorizontalExtendedLine= fem5HorizontalShortLine.lengthen(1.5);
+    let fem5HorizontalExtendedLine = fem5HorizontalShortLine.lengthen(1.5);
     stage3GroupTemporary1.add(fem5HorizontalExtendedLine.draw(two));
 
     let fem5TopRight = fem5HorizontalExtendedLine.intersection(this.yantra.mascTriangle4.lineTwo);
@@ -497,5 +504,160 @@ export class Stage3 extends BaseStage {
     this.addHiddenShape(stage3GroupTemporary1, 150);
 
     this.addRevealedShape(stage3GroupPermanent, 100);
+  }
+}
+
+export class CompletionStage extends BaseStage {
+  constructor(two, revealTime, yantra) {
+    super(two, revealTime);
+
+    this.yantra = yantra;
+
+    let completionStageGroupPermanent = two.makeGroup();
+
+    // let stage2GroupTemporary1 = two.makeGroup();
+    // stage2GroupTemporary1.visible = false;
+
+    // How many circles? Colour etc...
+
+
+
+    // 2 petal circles
+    let innerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius, this.yantra.circleRadius + 50);
+    completionStageGroupPermanent.add(innerPetelCircle.draw(two));
+
+
+    // 3 coloured circles
+
+    // Square
+
+    //Gates
+
+
+
+    // Top Gate
+    // let gateWidth = 30;
+    // let topGateMiddle = pointOnCircle(0, this.yantra.circleRadius, this.yantra.centre);
+    // let topGate = new Gate(gateWidth, topGateMiddle);
+    // completionStageGroupPermanent.add(topGate.draw(two));
+
+
+
+    this.addRevealedShape(completionStageGroupPermanent, 20);
+  }
+}
+
+class PetalCircle {
+  constructor(centre, innerRadius, outerRadius) {
+    this.centre = centre;
+    this.innerRadius = innerRadius;
+    this.outerRadius = outerRadius;
+  }
+
+  draw(two) {
+    let group = two.makeGroup();
+
+    let outerCircle = two.makeCircle(this.centre.x, this.centre.y, this.outerRadius, 1);
+    outerCircle.stroke = 'black';
+    outerCircle.linewidth = 3;
+    outerCircle.noFill();
+
+    let topPetalCentre = pointOnCircle2(0, 8, this.innerRadius, this.centre);
+    topPetalCentre = new Point(topPetalCentre.x, topPetalCentre.y + 12);
+
+    let curveWidth = 22 * 4;
+    let curveHeight = 60;
+    let petal1 = new Petal(topPetalCentre, curveWidth, curveHeight, 0);
+    group.add(petal1.draw(two));
+
+    let petal2Centre = pointOnCircle2(1, 8, this.innerRadius, this.centre);
+    petal2Centre = new Point(petal2Centre.x, petal2Centre.y + 12);
+    let petal2 = new Petal(petal2Centre, curveWidth, curveHeight, 2*Math.PI / 8);
+    group.add(petal2.draw(two));
+    // curve.rotation = Math.PI /2;
+
+
+    // two.makeCurve()
+
+    group.add(outerCircle);
+
+
+    return group;
+  }
+}
+
+class Petal {
+  constructor(centre, curveWidth, curveHeight, rotation) {
+    this.centre = centre;
+    this.curveWidth = curveWidth;
+    this.curveHeight = curveHeight;
+    this.rotation = rotation;
+  }
+
+  draw(two) {
+    let group = two.makeGroup();
+
+    // var curve = two.makeCurve(210, 200, 220, 150, 240, 250, 260, 150, 280, 250, 290, 200, true);
+    let ax = this.centre.x;
+    let ay = this.centre.y;
+
+    let curve = two.makeCurve(
+        ax - this.curveWidth, ay,
+        ax - this.curveWidth * 0.9, ay - this.curveHeight * 0.25,
+
+        ax - this.curveWidth * 0.1, ay - this.curveHeight * 0.8,
+        ax - this.curveWidth * 0.03, ay - this.curveHeight,
+        ax + this.curveWidth * 0.03, ay - this.curveHeight,
+        ax + this.curveWidth * 0.1, ay - this.curveHeight * 0.8,
+
+        ax + this.curveWidth * 0.9, ay - this.curveHeight * 0.25,
+        ax + this.curveWidth, ay,
+        true
+    );
+
+    // let curve = two.makeCurve(210, 190, 212, 180, 230, 160, 232, 155, true);
+    curve.linewidth = 2;
+    // curve.scale = new Two.Vector(4, 1);
+    // curve.scale = 1.75;
+    // curve.rotation = Math.PI /2;
+    curve.rotation = this.rotation;
+    curve.noFill();
+    curve.stroke = 'rgba(255, 0, 0, 0.5)';
+    group.add(curve);
+
+    return group;
+  }
+}
+
+class Gate {
+  constructor(apertureWidth, centre) {
+    this.centre = centre;
+    this.apertureWidth = apertureWidth;
+    this.gateWidth = 5 * apertureWidth;
+  }
+
+  draw(two) {
+    let gateGroup = two.makeGroup();
+    let leftUpLine = two.makeLine(
+        this.centre.x - this.apertureWidth, this.centre.y, this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth
+    );
+    gateGroup.add(leftUpLine);
+    let leftHorizontalLine = two.makeLine(
+        this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth, this.centre.x - this.gateWidth, this.centre.y - this.apertureWidth
+    );
+    gateGroup.add(leftHorizontalLine);
+
+    let rightUpLine = two.makeLine(
+        this.centre.x + this.apertureWidth, this.centre.y, this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth
+    );
+    gateGroup.add(rightUpLine);
+    let rightHorizontalLine = two.makeLine(
+        this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth, this.centre.x + this.gateWidth, this.centre.y - this.apertureWidth
+    );
+    gateGroup.add(rightHorizontalLine);
+
+    //Close top line
+
+    return gateGroup;
   }
 }
