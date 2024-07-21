@@ -617,18 +617,18 @@ class Petal {
     let group = two.makeGroup();
 
     // var curve = two.makeCurve(210, 200, 220, 150, 240, 250, 260, 150, 280, 250, 290, 200, true);
-    let petalCentre = pointOnCircle2(this.petalIndex, this.petalCount, this.circleInnerRadius, this.circleCentre);
+    let petalCentre = pointOnCircle2(0, this.petalCount, this.circleInnerRadius, this.circleCentre);
     // let ax = this.centre.x;
     // let ay = this.centre.y;
     group.add(two.makeCircle(petalCentre.x, petalCentre.y, 3));
 
 
-    let petalLeft = pointOnCircle2(this.petalIndex-0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
+    let petalLeft = pointOnCircle2(-0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
     group.add(two.makeCircle(petalLeft.x, petalLeft.y, 3));
-    let petalRight = pointOnCircle2(this.petalIndex + 0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
+    let petalRight = pointOnCircle2(0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
     group.add(two.makeCircle(petalRight.x, petalRight.y, 3));
 
-    let petalTop = pointOnCircle2(this.petalIndex, this.petalCount, this.circleOuterRadius, this.circleCentre);
+    let petalTop = pointOnCircle2(0, this.petalCount, this.circleOuterRadius, this.circleCentre);
     group.add(two.makeCircle(petalTop.x, petalTop.y , 3));
 
     // ax = petalLeft.x;
@@ -643,17 +643,43 @@ class Petal {
     let height = petalRight.y - petalTop.y;
     // let height = Math.sqrt(Math.pow(petalRight.y - petalTop.y, 2) + Math.pow(petalRight.x - petalTop.x, 2));
 
+    // let curve = two.makeCurve(
+    //     ax - halfWidth, ay,
+    //     ax - halfWidth * 0.9, ay - height * 0.25,
+    //
+    //     ax - halfWidth * 0.1, ay - height * 0.8,
+    //     ax - halfWidth * 0.03, ay - height,
+    //     ax + halfWidth * 0.03, ay - height,
+    //     ax + halfWidth * 0.1, ay - height * 0.8,
+    //
+    //     ax + halfWidth * 0.9, ay - height * 0.25,
+    //     ax + halfWidth, ay,
+    //     true
+    // );
+
+    let points = [
+        new Point(ax - halfWidth, ay),
+        new Point(ax - halfWidth * 0.9, ay - height * 0.25),
+
+        new Point(ax - halfWidth * 0.1, ay - height * 0.8),
+        new Point(ax - halfWidth * 0.03, ay - height),
+        new Point(ax + halfWidth * 0.03, ay - height),
+        new Point(ax + halfWidth * 0.1, ay - height * 0.8),
+
+        new Point(ax + halfWidth * 0.9, ay - height * 0.25),
+        new Point(ax + halfWidth, ay)
+    ];
+    points = this.rotatePoints(points, angle);
+
     let curve = two.makeCurve(
-        ax - halfWidth, ay,
-        ax - halfWidth * 0.9, ay - height * 0.25,
-
-        ax - halfWidth * 0.1, ay - height * 0.8,
-        ax - halfWidth * 0.03, ay - height,
-        ax + halfWidth * 0.03, ay - height,
-        ax + halfWidth * 0.1, ay - height * 0.8,
-
-        ax + halfWidth * 0.9, ay - height * 0.25,
-        ax + halfWidth, ay,
+        points[0].x, points[0].y,
+        points[1].x, points[1].y,
+        points[2].x, points[2].y,
+        points[3].x, points[3].y,
+        points[4].x, points[4].y,
+        points[5].x, points[5].y,
+        points[6].x, points[6].y,
+        points[7].x, points[7].y,
         true
     );
 
@@ -668,6 +694,16 @@ class Petal {
     group.add(curve);
 
     return group;
+  }
+
+  rotatePoints(points, angle) {
+    let that = this;
+
+    let newPoints = [];
+    points.forEach(point => {
+      newPoints.push(point.rotate(angle, that.circleCentre));
+    });
+    return newPoints;
   }
 }
 
