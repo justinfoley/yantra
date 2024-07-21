@@ -565,10 +565,10 @@ export class CompletionStage extends BaseStage {
 
 
     // Top Gate
-    // let gateWidth = 30;
-    // let topGateMiddle = pointOnCircle(0, this.yantra.circleRadius, this.yantra.centre);
-    // let topGate = new Gate(gateWidth, topGateMiddle);
-    // completionStageGroupPermanent.add(topGate.draw(two));
+    let gateWidth = 60;
+    let topGateMiddle = pointOnCircle(0, outerRadius, this.yantra.centre);
+    let topGate = new Gate(gateWidth, topGateMiddle, outerRadius);
+    completionStageGroupPermanent.add(topGate.draw(two));
 
 
 
@@ -685,8 +685,10 @@ class Petal {
 }
 
 class Gate {
-  constructor(apertureWidth, centre) {
+  constructor(apertureWidth, centre, radius) {
     this.centre = centre;
+    this.radius = radius;
+    this.padding = 10;
     this.apertureWidth = apertureWidth;
     this.gateWidth = 5 * apertureWidth;
   }
@@ -694,22 +696,34 @@ class Gate {
   draw(two) {
     let gateGroup = two.makeGroup();
     let leftUpLine = two.makeLine(
-        this.centre.x - this.apertureWidth, this.centre.y, this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth
+        this.centre.x - this.apertureWidth, this.centre.y - this.padding, this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth - this.padding
     );
     gateGroup.add(leftUpLine);
     let leftHorizontalLine = two.makeLine(
-        this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth, this.centre.x - this.gateWidth, this.centre.y - this.apertureWidth
+        this.centre.x - this.apertureWidth, this.centre.y - this.apertureWidth - this.padding, this.centre.x - this.gateWidth, this.centre.y - this.apertureWidth - this.padding
     );
     gateGroup.add(leftHorizontalLine);
 
     let rightUpLine = two.makeLine(
-        this.centre.x + this.apertureWidth, this.centre.y, this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth
+        this.centre.x + this.apertureWidth, this.centre.y - this.padding, this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth - this.padding
     );
     gateGroup.add(rightUpLine);
     let rightHorizontalLine = two.makeLine(
-        this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth, this.centre.x + this.gateWidth, this.centre.y - this.apertureWidth
+        this.centre.x + this.apertureWidth, this.centre.y - this.apertureWidth - this.padding, this.centre.x + this.gateWidth, this.centre.y - this.apertureWidth - this.padding
     );
     gateGroup.add(rightHorizontalLine);
+
+    let leftBaseHorizontalLine = two.makeLine(
+        this.centre.x - this.radius, this.centre.y - this.padding, this.centre.x - this.apertureWidth, this.centre.y - this.padding
+    );
+    gateGroup.add(leftBaseHorizontalLine);
+
+    let rightBaseHorizontalLine = two.makeLine(
+        this.centre.x + this.apertureWidth, this.centre.y - this.padding, this.centre.x  + this.radius, this.centre.y - this.padding
+    );
+    gateGroup.add(rightBaseHorizontalLine);
+
+    // gateGroup.rotation = Math.PI / 4;
 
     //Close top line
 
