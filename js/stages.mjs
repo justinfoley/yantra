@@ -537,21 +537,21 @@ export class CompletionStage extends BaseStage {
     outerRadius = outerRadius + 3;
     let colourCircle1 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
     colourCircle1.stroke = 'yellow';
-    colourCircle1.linewidth = 3;
+    colourCircle1.linewidth = 7;
     colourCircle1.noFill();
     completionStageGroupPermanent.add(colourCircle1);
 
-    outerRadius = outerRadius + 3;
+    outerRadius = outerRadius + 7;
     let colourCircle2 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
     colourCircle2.stroke = 'orange';
-    colourCircle2.linewidth = 3;
+    colourCircle2.linewidth = 7;
     colourCircle2.noFill();
     completionStageGroupPermanent.add(colourCircle2);
 
-    outerRadius = outerRadius + 3;
+    outerRadius = outerRadius + 7;
     let colourCircle3 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
     colourCircle3.stroke = 'blue';
-    colourCircle3.linewidth = 3;
+    colourCircle3.linewidth = 7;
     colourCircle3.noFill();
     completionStageGroupPermanent.add(colourCircle3);
 
@@ -589,7 +589,7 @@ class PetalCircle {
 
     let outerCircle = two.makeCircle(this.centre.x, this.centre.y, this.outerRadius);
     outerCircle.stroke = 'black';
-    outerCircle.linewidth = 3;
+    outerCircle.linewidth = 1;
     outerCircle.noFill();
 
     for(let i = 0; i < this.petals; i++) {
@@ -671,7 +671,7 @@ class Petal {
     );
 
     // let curve = two.makeCurve(210, 190, 212, 180, 230, 160, 232, 155, true);
-    curve.linewidth = 2;
+    curve.linewidth = 3;
     // curve.scale = new Two.Vector(4, 1);
     // curve.scale = 1.75;
     // curve.rotation = Math.PI /2;
