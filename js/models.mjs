@@ -9,7 +9,7 @@ export class Yantra {
     this.objects = []
     this.two = two;
 
-    this.skipTriangles = true;
+    this.skipTriangles = false;
 
     let revealTime = 50;
     this.stage0 = new Stage0(two, revealTime, this);

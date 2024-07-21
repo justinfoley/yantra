@@ -523,8 +523,11 @@ export class CompletionStage extends BaseStage {
 
 
     // 2 petal circles
-    let innerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius, this.yantra.circleRadius + 50);
+    let innerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius, this.yantra.circleRadius + 50, 8);
     completionStageGroupPermanent.add(innerPetelCircle.draw(two));
+
+    let outerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius + 50, this.yantra.circleRadius + 100, 16);
+    completionStageGroupPermanent.add(outerPetelCircle.draw(two));
 
 
     // 3 coloured circles
@@ -548,10 +551,11 @@ export class CompletionStage extends BaseStage {
 }
 
 class PetalCircle {
-  constructor(centre, innerRadius, outerRadius) {
+  constructor(centre, innerRadius, outerRadius, petals) {
     this.centre = centre;
     this.innerRadius = innerRadius;
     this.outerRadius = outerRadius;
+    this.petals = petals;
   }
 
   draw(two) {
@@ -562,44 +566,12 @@ class PetalCircle {
     outerCircle.linewidth = 3;
     outerCircle.noFill();
 
-    for(let i = 0; i < 8; i++) {
-      let petal = new Petal(i, 8, this.innerRadius, this.centre, this.outerRadius);
+    for(let i = 0; i < this.petals; i++) {
+      let petal = new Petal(i, this.petals, this.innerRadius, this.centre, this.outerRadius);
       group.add(petal.draw(two));
     }
 
-    // let petal1 = new Petal(0, 8, this.innerRadius, this.centre, this.outerRadius);
-    // group.add(petal1.draw(two));
-    //
-    // let petal2 = new Petal(1, 8, this.innerRadius, this.centre, this.outerRadius);
-    // group.add(petal2.draw(two));
-    //
-    // let petal3 = new Petal(2, 8, this.innerRadius, this.centre, this.outerRadius);
-    // group.add(petal3.draw(two));
-    //
-    // let petal4 = new Petal(3, 8, this.innerRadius, this.centre, this.outerRadius);
-    // group.add(petal4.draw(two));
-    //
-
-
-    // let petal2Centre = pointOnCircle2(1, 8, this.innerRadius, this.centre);
-    // let angle2 = 1*Math.PI / 8
-    //
-    // petal2Centre = new Point(petal2Centre.x - Math.cos(angle2) * 12, petal2Centre.y - Math.sin(angle2) * 12);
-    // let petal2 = new Petal(petal2Centre, curveWidth, curveHeight, angle2, this.innerRadius, this.centre, this.outerRadius);
-    // group.add(petal2.draw(two));
-    //
-    // let petal3Centre = pointOnCircle2(2, 8, this.innerRadius, this.centre);
-    // let angle3 = 2*Math.PI / 8
-    //
-    // petal3Centre = new Point(petal3Centre.x + Math.cos(angle2) * 12, petal3Centre.y + Math.sin(angle3) * 12);
-    // let petal3 = new Petal(petal3Centre, curveWidth, curveHeight, angle3);
-    // group.add(petal3.draw(two));
-
-    // two.makeCurve()
-
     group.add(outerCircle);
-
-
     return group;
   }
 }
