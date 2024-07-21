@@ -72,8 +72,9 @@ export class Stage0 extends BaseStage {
 
     this.yantra = yantra;
     this.yantra.circle = two.makeCircle(this.yantra.centreX, this.yantra.centreY, this.yantra.circleRadius);
-    this.yantra.circle.stroke = 'orangered';
-    this.yantra.circle.linewidth = 5;
+    // this.yantra.circle.stroke = 'orangered';
+    this.yantra.circle.stroke = 'black';
+    this.yantra.circle.linewidth = 3;
     this.yantra.circle.visible = false;
     // circle.fill = '#FF8000';
     // console.log("two.width: " + two.width);
@@ -523,11 +524,36 @@ export class CompletionStage extends BaseStage {
 
 
     // 2 petal circles
-    let innerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius, this.yantra.circleRadius + 50, 8);
+    let innerRadius = this.yantra.circleRadius;
+    let outerRadius = this.yantra.circleRadius + 50;
+    let innerPetelCircle = new PetalCircle(this.yantra.centre, innerRadius, outerRadius, 8);
     completionStageGroupPermanent.add(innerPetelCircle.draw(two));
 
-    let outerPetelCircle = new PetalCircle(this.yantra.centre, this.yantra.circleRadius + 50, this.yantra.circleRadius + 100, 16);
+    innerRadius = outerRadius;
+    outerRadius = innerRadius + 50;
+    let outerPetelCircle = new PetalCircle(this.yantra.centre, innerRadius, outerRadius, 16);
     completionStageGroupPermanent.add(outerPetelCircle.draw(two));
+
+    outerRadius = outerRadius + 3;
+    let colourCircle1 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
+    colourCircle1.stroke = 'yellow';
+    colourCircle1.linewidth = 3;
+    colourCircle1.noFill();
+    completionStageGroupPermanent.add(colourCircle1);
+
+    outerRadius = outerRadius + 3;
+    let colourCircle2 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
+    colourCircle2.stroke = 'orange';
+    colourCircle2.linewidth = 3;
+    colourCircle2.noFill();
+    completionStageGroupPermanent.add(colourCircle2);
+
+    outerRadius = outerRadius + 3;
+    let colourCircle3 = two.makeCircle(this.yantra.centre.x, this.yantra.centre.y, outerRadius);
+    colourCircle3.stroke = 'blue';
+    colourCircle3.linewidth = 3;
+    colourCircle3.noFill();
+    completionStageGroupPermanent.add(colourCircle3);
 
 
     // 3 coloured circles
@@ -561,7 +587,7 @@ class PetalCircle {
   draw(two) {
     let group = two.makeGroup();
 
-    let outerCircle = two.makeCircle(this.centre.x, this.centre.y, this.outerRadius, 1);
+    let outerCircle = two.makeCircle(this.centre.x, this.centre.y, this.outerRadius);
     outerCircle.stroke = 'black';
     outerCircle.linewidth = 3;
     outerCircle.noFill();
@@ -588,46 +614,33 @@ class Petal {
   draw(two) {
     let group = two.makeGroup();
 
-    // var curve = two.makeCurve(210, 200, 220, 150, 240, 250, 260, 150, 280, 250, 290, 200, true);
     let petalCentre = pointOnCircle2(0, this.petalCount, this.circleInnerRadius, this.circleCentre);
-    // let ax = this.centre.x;
-    // let ay = this.centre.y;
-    group.add(two.makeCircle(petalCentre.x, petalCentre.y, 3));
+    let angle = this.petalIndex * Math.PI * 2 / this.petalCount;
+
+    // let petalCentreRotated = petalCentre.rotate(angle, this.circleCentre);
+    // group.add(two.makeCircle(petalCentreRotated.x, petalCentreRotated.y, 3));
 
 
-    let petalLeft = pointOnCircle2(-0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
-    group.add(two.makeCircle(petalLeft.x, petalLeft.y, 3));
-    let petalRight = pointOnCircle2(0.5, this.petalCount, this.circleInnerRadius, this.circleCentre);
-    group.add(two.makeCircle(petalRight.x, petalRight.y, 3));
+    let petalLeft = pointOnCircle2(-0.5, this.petalCount, this.circleInnerRadius+2, this.circleCentre);
+    // let petalLeftRotated = petalLeft.rotate(angle, this.circleCentre);
+    // group.add(two.makeCircle(petalLeftRotated.x, petalLeftRotated.y, 3));
 
-    let petalTop = pointOnCircle2(0, this.petalCount, this.circleOuterRadius, this.circleCentre);
-    group.add(two.makeCircle(petalTop.x, petalTop.y , 3));
+    let petalRight = pointOnCircle2(0.5, this.petalCount, this.circleInnerRadius+2, this.circleCentre);
+    // let petalRightRotated = petalRight.rotate(angle, this.circleCentre);
+    // group.add(two.makeCircle(petalRightRotated.x, petalRightRotated.y, 3));
 
-    // ax = petalLeft.x;
+    let petalTop = pointOnCircle2(0, this.petalCount, this.circleOuterRadius-3, this.circleCentre);
+    // let petalTopRotated = petalTop.rotate(angle, this.circleCentre);
+    // group.add(two.makeCircle(petalTopRotated.x, petalTopRotated.y , 3));
+
     let ax = petalCentre.x;
     let ay = petalLeft.y;
-
-    let angle = this.petalIndex * Math.PI * 2 / this.petalCount;
 
     let width = petalRight.x - petalLeft.x;
     let halfWidth = width / 2;
 
     let height = petalRight.y - petalTop.y;
     // let height = Math.sqrt(Math.pow(petalRight.y - petalTop.y, 2) + Math.pow(petalRight.x - petalTop.x, 2));
-
-    // let curve = two.makeCurve(
-    //     ax - halfWidth, ay,
-    //     ax - halfWidth * 0.9, ay - height * 0.25,
-    //
-    //     ax - halfWidth * 0.1, ay - height * 0.8,
-    //     ax - halfWidth * 0.03, ay - height,
-    //     ax + halfWidth * 0.03, ay - height,
-    //     ax + halfWidth * 0.1, ay - height * 0.8,
-    //
-    //     ax + halfWidth * 0.9, ay - height * 0.25,
-    //     ax + halfWidth, ay,
-    //     true
-    // );
 
     let points = [
         new Point(ax - halfWidth, ay),
@@ -641,17 +654,19 @@ class Petal {
         new Point(ax + halfWidth * 0.9, ay - height * 0.25),
         new Point(ax + halfWidth, ay)
     ];
-    points = this.rotatePoints(points, angle);
+    // points = this.rotatePoints(points, angle);
+    let newPoints = [];
+    points.forEach(point => {
+      newPoints.push(point.rotate(angle, this.circleCentre));
+    });
 
+    let pointCoordinates = [];
+    newPoints.forEach(point => {
+      pointCoordinates.push(point.x);
+      pointCoordinates.push(point.y);
+    });
     let curve = two.makeCurve(
-        points[0].x, points[0].y,
-        points[1].x, points[1].y,
-        points[2].x, points[2].y,
-        points[3].x, points[3].y,
-        points[4].x, points[4].y,
-        points[5].x, points[5].y,
-        points[6].x, points[6].y,
-        points[7].x, points[7].y,
+        ...pointCoordinates,
         true
     );
 
@@ -666,16 +681,6 @@ class Petal {
     group.add(curve);
 
     return group;
-  }
-
-  rotatePoints(points, angle) {
-    let that = this;
-
-    let newPoints = [];
-    points.forEach(point => {
-      newPoints.push(point.rotate(angle, that.circleCentre));
-    });
-    return newPoints;
   }
 }
 
