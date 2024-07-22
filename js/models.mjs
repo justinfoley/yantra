@@ -5,7 +5,7 @@ export class Yantra {
     this.centreX = two.width * 0.5;
     this.centreY = two.height * 0.5;
     this.centre = new Point(this.centreX, this.centreY);
-    this.circleRadius = 300;
+    this.circleRadius = 150;
     this.objects = []
     this.two = two;
 
@@ -103,7 +103,7 @@ export class Point {
 }
 
 export class Line {
-  constructor(startX, startY, endX, endY) {
+  constructor(startX, startY, endX, endY, dashed=true) {
     this.startX = startX;
     this.startY = startY;
     this.endX = endX;
@@ -111,16 +111,23 @@ export class Line {
 
     this.start = new Point(startX, startY);
     this.end = new Point(endX, endY);
+    this.dashed = dashed;
   }
 
   draw(two) {
     let line = two.makeLine(this.startX, this.startY, this.endX, this.endY);
-    line.dashes = [3, 3];
+
+    if(this.dashed) {
+      line.dashes = [3, 3];
+    } else {
+      line.dashes = [];
+    }
+
     return line;
   }
 
-  static fromPoints(start, end) {
-    return new Line(start.x, start.y, end.x, end.y);
+  static fromPoints(start, end, dashed=true) {
+    return new Line(start.x, start.y, end.x, end.y, dashed);
   }
 
   toString() {
@@ -195,24 +202,19 @@ export class Line {
     let gradient = yLen / xLen;
 
     let length = (factor / 2) * Math.sqrt(Math.pow(xLen, 2) + Math.pow(yLen, 2));
-
     let angle = Math.atan2(yLen, xLen);
-    // if(angle > Math.PI / 2) {
-    // angle = Math.PI / 2 - angle;
-    // }
-
-    // let newX = this.startX + Math.tan(angle) * (y - this.startY);
-    //
-    // let start = new Point(this.startX, this.startY);
-    // if(Math.abs(y - this.endY) > Math.abs(y - this.startY)) {
-    //   start = new Point(this.endX, this.endY);
-    // }
-    //
-    // return Line.fromPoints(start, new Point(newX, y));
 
     let newStart = new Point(this.startX - length * Math.cos(angle), this.startY - length * Math.sin(angle));
     let newEnd = new Point(this.endX + length * Math.cos(angle), this.endY + length * Math.sin(angle));
 
     return Line.fromPoints(newStart, newEnd);
+  }
+
+  rotate(angle, centre) {
+    return Line.fromPoints(
+        this.start.rotate(angle, centre),
+        this.end.rotate(angle, centre),
+        this.dashed
+    );
   }
 }
